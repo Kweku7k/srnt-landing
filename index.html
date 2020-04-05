@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<!--  This site was created in Webflow. http://www.webflow.com  -->
+<!--  Last Published: Thu Mar 26 2020 16:18:25 GMT+0000 (Coordinated Universal Time)  -->
+<html data-wf-page="5e3056e4c8d42583c37c6553" data-wf-site="5e3056e4c8d42507e27c654e">
+<head>
+  <meta charset="utf-8">
+  <title>Serenity</title>
+  <meta content="width=device-width, initial-scale=1" name="viewport">
+  <meta content="Webflow" name="generator">
+  <link href="css/normalize.css" rel="stylesheet" type="text/css">
+  <link href="css/webflow.css" rel="stylesheet" type="text/css">
+  <script src="https://kit.fontawesome.com/091f1122a7.js" crossorigin="anonymous"></script>
+  <link href="css/serenityhealth.webflow.css" rel="stylesheet" type="text/css">
+  <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/webfont/1.6.26/webfont.js" type="text/javascript"></script>
+  <script type="text/javascript">WebFont.load({  google: {    families: ["Lato:100,100italic,300,300italic,400,400italic,700,700italic,900,900italic","Hind:300,regular,600","Neuton:200,300,regular"]  }});</script>
+  <!-- [if lt IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js" type="text/javascript"></script><![endif] -->
+  <script type="text/javascript">!function(o,c){var n=c.documentElement,t=" w-mod-";n.className+=t+"js",("ontouchstart"in o||o.DocumentTouch&&c instanceof DocumentTouch)&&(n.className+=t+"touch")}(window,document);</script>
+  <link href="images/Ellipse 18.png" rel="shortcut icon" type="image/x-icon">
+  <link href="images/Ellipse 18.png" rel="apple-touch-icon">
+  <!-- DELETE ↓↓ -->
+  <!--  Temporary Memberstack Code  -->
+  <script src="https://api.memberstack.io/static/memberstack.js" data-memberstack-id="aeb2a3f0781da9084ef8fe01880f9986"></script>
+  <script>
+    function openForm(form) {	
+	  window.isAppointmentBooking = form === "form-appointment" ? true : false;
+	  // Make a request for a user with a given ID
+	  axios.get('http://www.google.com')
+	  .then(function (response) {
+		// handle success
+		console.log("logging axios..",response);
+	  })
+	  .catch(function (error) {
+		// handle error
+		console.log("logging axios error..",error);
+	  })
+	  .then(function () {
+		// always executed
+	  });
+	  
+	  let totalPoints = 0;
+	  
+	  var flowCallback = function(dto, success, error) {
+		console.log("dto....", dto);
+		console.log("dto attr....", dto.tag.domElement.name);
+		console.log("dto....", dto.tag.flowManager.step);
+
+		// Covid Assessment
+		if(dto.tag.domElement.name === "breath" && dto.text === "Yes")
+		{
+			totalPoints += 2;
+		}
+		if(dto.tag.domElement.name === "travel" && dto.text === "Yes")
+		{
+			totalPoints += 3;
+		}
+		if(dto.tag.domElement.name === "contact" && dto.text === "Yes")
+		{
+			totalPoints += 3;
+		}
+		if(dto.tag.domElement.name === "cough" && dto.text === "Yes")
+		{
+			totalPoints++;
+		}
+		if(dto.tag.domElement.name === "temperature" && dto.text === "Yes")
+		{
+			totalPoints++;
+		}
+		
+		console.log(totalPoints)
+		// skip to last but one step if positive
+		if (dto.tag.domElement.name === "location" && totalPoints > 5) {
+			dto.tag.flowManager.step = dto.tag.flowManager.maxSteps - 2;
+		}
+		
+		// skip to final step if not positive
+		if (dto.tag.domElement.name === "redirect" && totalPoints < 5) {
+			dto.tag.flowManager.step = dto.tag.flowManager.maxSteps - 1;
+		}
+
+		// We assume every answer is valid. If that wasnt the case we would call error()
+		success();
+      };
+	
+	 document.getElementById("myForm").style.display = "block";
+	 var conversationalForm = window.cf.ConversationalForm.startTheConversation({
+     formEl: document.getElementById(form),
+     context: document.getElementById("cf-context"),
+	 preventAutoStart: true,
+	 preventAutoFocus: true,
+	 flowStepCallback: flowCallback,
+     submitCallback: function() {
+	 // Appointment booking
+	 if(window.isAppointmentBooking){
+		conversationalForm.addRobotChatResponse("Done.");
+	 }
+	 
+	 let totalPoints = 0;
+	 var formDataSerialized = conversationalForm.getFormData(true);
+	 // Covid Assessment
+	 if(formDataSerialized["breath"][0] === "Yes")
+	 {
+		totalPoints += 2;
+	 }
+	 if(formDataSerialized["travel"][0] === "Yes")
+	 {
+		totalPoints += 3;
+	 }
+	 if(formDataSerialized["contact"][0] === "Yes")
+	 {
+		totalPoints += 3;
+	 }
+	 if(formDataSerialized["cough"][0] === "Yes")
+	 {
+		totalPoints++;
+	 }
+	 if(formDataSerialized["temperature"][0] === "Yes")
+	 {
+		totalPoints++;
+	 }
+	 // output
+	 if(totalPoints < 5)
+	 {
+		if(formDataSerialized["redirect"][0] === "Yes")
+		{
+			conversationalForm.addRobotChatResponse("I'm starting the appointment booking process."); 
+			setTimeout(()=>window.location.assign("http://serenity.health/appointment.html"), 2000);
+		}else{
+			conversationalForm.addRobotChatResponse("Your symptoms do not show signs of Covid-19 however you should book an appointment and get tested.");
+		}
+	 }else{
+		conversationalForm.addRobotChatResponse("Our team will get in touch with you shortly"); 
+	 }
+    }
+  });
+  conversationalForm.start();
+}
+
+function closeForm() {
+  document.getElementById("myForm").style.display = "none";
+}
+  </script>
+ 
+</head>
+<body>
+  <!-- DELETE ↑↑ -->
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/space10-community/conversational-form@1.0.1/dist/conversational-form.min.js" crossorigin></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/0.11.10/vue.min.js"></script>
+  <script>
+     
+     new Vue({
+       el: '#container',
+       data: {
+         value: '',
+       }
+     });
+     
+   </script>
+   
+  <div class="page-wrapper">
+    <div class="navbar-ix-trigger">
+      <div templateid="light" class="template-id"></div>
+    </div>
+    <div class="homepage-navbar">
+      <div class="section">
+        <h1 class="heading-3">Check your Coronavirus (COVID-19) symptoms</h1>
+        <a class="button-7 w-button" onclick="openForm('form')"><strong class="bold-text" style="color: white;">Run a COVID-19 assessment</strong></a><a href="http://patient.serenity.health/#/" class="button-8 w-button" style="display: none;">Learn more</a></div>
+
+      <div data-collapse="medium" data-animation="default" data-duration="400" class="navbar w-nav">
+        <div class="container navbar-container"><a href="index.html" aria-current="page" class="brand w-nav-brand w--current"><img src="images/logo2.png" alt="" class="image-2"></a>
+          <nav role="navigation" class="homepage-nav-menu w-nav-menu">
+            <div data-hover="1" data-delay="100" class="nav-dropdown w-dropdown">
+              <div class="nav-link dropdown-toggle w-dropdown-toggle">
+                <div class="inline-block">Home</div><img src="images/Down.svg" width="9" alt="" class="dropdown-icon">
+                <div class="div-extender"></div>
+              </div>
+              <nav class="nav-dropdown-list w-dropdown-list">
+                <div class="dropdown-diamond"></div><a href="index.html" aria-current="page" class="nav-link dropdown-nav-link w-nav-link w--current">Home 1</a><a href="home-layout-two.html" class="nav-link dropdown-nav-link w-nav-link">Home 2</a></nav>
+            </div><a href="covid-19.html" target="_blank" class="nav-link w-nav-link" style="display: none;">Locations<br></a><a href="http://patient.serenity.health/#/new-appointment" target="_blank" class="button navbar-cta hide-current w-nav-link" style="border-radius: 20px; color: rgb(60, 60, 134); background-color: white; border: 1px solid rgb(60, 60, 134); display: none;">Book Appointment</a></nav>
+          <div class="menu-button w-nav-button">
+            <div class="nav-icon w-icon-nav-menu"></div>
+          </div>
+        </div>
+        <div class="navbar-shadow"></div><a href="#" class="button-12 w-button">Button Text</a><a href="http://patient.serenity.health/#/" target="_blank" class="nav-link w-nav-link" style="display: none;">In Person Care<br></a><a href="http://patient.serenity.health/#/" class="nav-link w-nav-link" style="display: none;">Virtual Care<br></a><a href="http://patient.serenity.health/#/" class="nav-link w-nav-link" style="display: none;">Home Visit<br></a></div>
+    </div>
+	<!--bot-->
+	<div class="chat-popup" id="myForm" style="position: fixed; bottom: 0px; z-index:10000; right:0px">
+    <div class="hold" style="display: inline-block; width: 100%; ">
+      <!-- <h6 id="chatone" style="display: none;">Serenity Health </h6> -->
+      <!-- </div> -->
+      <!-- <div class="row"> -->
+        <!-- <i class="far fa-user-circle"></i> -->
+          <img src="images/Ellipse 18.png" style="width: 6%; padding-left: 10px;">
+          <h4 style="display: inline-block; width: 80%;" id="chatstart"> COVID-19 ASSESSMENT TOOL</h4>
+      <i onclick="closeForm()"class="far fa-times-circle fa-2x" style="width: 10%;"></i>
+    <!-- </div> -->
+    </div>
+    <div id="container" >
+      <form id="form" autocomplete="off">
+        <fieldset>
+          <label for="name">What's your name?</label>
+          <input cf-questions="Hi there! What's your name? 😊" class="form-control" name="name" id="name" />
+        </fieldset>
+		<cf-robot-message cf-questions="Hi {name},"></cf-robot-message>
+		<!--God made it possible-->
+        <fieldset>
+            <select cf-questions="Have you returned to Ghana in the last 14 days?" name="travel" id="travel" class="form-control">
+              <option></option>
+              <option>Yes</option>
+              <option>No</option>
+            </select>
+		</fieldset>
+      <fieldset>
+        <select cf-questions="Have you been in contact with someone who has tested positive for the Coronavirus in the past 14 days?" name="contact" id="contact" class="form-control">
+          <option></option>
+          <option>Yes</option>
+          <option>Not sure</option>
+          <option>No</option>
+        </select>
+      </fieldset>
+      <fieldset>
+       <select cf-conditional-contact="No||Not sure" cf-questions="Have you been in contact with someone who is currently in self-isolation?" name="occupation" id="occupation" class="form-control">
+         <option></option>
+         <option>Yes</option>
+		 <option>Not sure</option>
+         <option>No</option>
+       </select>
+      </fieldset>
+      <fieldset>
+        <select cf-questions="Do you have a cough?" name="cough" id="cough" class="form-control">
+          <option></option>
+          <option>Yes</option>
+          <option>No</option>
+		</select>
+	  </fieldset>
+	  <fieldset>
+		<select cf-questions="Are you feeling shortness of breath, or difficulty breathing?" name="breath" id="breath" class="form-control">
+			<option></option>
+			<option>Yes</option>
+			<option>No</option>
+		</select>
+	  </fieldset>
+	  <fieldset>
+		<select cf-questions="Do you have high temperature? 🌡" name="temperature" id="temperature" class="form-control">
+			<option></option>
+			<option>Yes</option>
+			<option>No</option>
+			<option>Don't know</option>
+		</select>
+	  </fieldset>
+	  <fieldset>
+          <label for="name">What is your current location?</label>
+          <input cf-questions="Please provide your current location? 🏚" class="form-control" name="location" id="location" />
+      </fieldset>
+	  <fieldset>
+        <select cf-questions="Would you like me to book an appointment for you and get your vitals checked by our health professionals." name="redirect" id="redirect" class="form-control">
+          <option></option>
+          <option>Yes</option>
+          <option>No</option>
+        </select>
+      </fieldset>
+	  <fieldset>
+          <label for="name">Please enter your mobile number</label>
+          <input cf-questions="Please enter your mobile number 📱" class="form-control" name="mobile" id="mobile" />
+      </fieldset>
+	  	</form>
+	  <form id="form-appointment" autocomplete="off">
+        <fieldset>
+          <label for="name">What's your name?</label>
+          <input cf-questions="Hi there! My name is Serenity What's yours? 😊" class="form-control" name="name" id="name" />
+        </fieldset>
+		<cf-robot-message cf-questions="Hi {name}, I'm going to book a hospital visit for you."></cf-robot-message>
+		<!--God made it possible-->
+        <fieldset>
+            <select cf-questions="Kindly select a hospital of choice" name="hospital" id="hospital" class="form-control">
+              <option></option>
+              <option>Nhyaho Medical Centre</option>
+            </select>
+		</fieldset>
+      <fieldset>
+        <select cf-questions="{hospital} has several branches. Which branch would you want to visit?" name="branch" id="branch" class="form-control">
+          <option></option>
+          <option>Airport Residential</option>
+          <option>Octagon</option>
+        </select>
+      </fieldset>
+      <fieldset>
+       <select cf-questions="Great {name}. are you an existing patient of {hospital}?" name="existingMember" id="existingMember" class="form-control">
+         <option></option>
+         <option>No, I'm not.</option>
+         <option>Yes, I am.</option>
+       </select>
+      </fieldset>
+	  <fieldset>
+          <label for="name">Kindly provide your full name.</label>
+          <input cf-conditional-existingMember="No, I'm not" cf-questions="Let's get you registered at {hospital}. Kindly give me your full name." class="form-control" name="fullname" id="fullname" />
+      </fieldset>
+	  <fieldset>
+          <label for="name">Thank you. Now please share your date of birth.</label>
+          <input cf-conditional-existingMember="No, I'm not" cf-questions="Kindly share your date of birth with me." class="form-control" name="dateofbirth" id="dateofbirth" />
+      </fieldset>
+	  <fieldset>
+          <label for="name">Kindly give me your full name.</label>
+          <input cf-conditional-existingMember="No, I'm not" cf-questions="Almost there. enter your mobile number." class="form-control" name="mobilenumber" id="mobilenumber" />
+      </fieldset>
+	  <fieldset>
+          <label for="name">Kindly give me your full name.</label>
+          <input cf-conditional-existingMember="No, I'm not" cf-questions="A code has been sent to your phone, kindly input for verification." class="form-control" name="verificationcode" id="verificationcode" />
+      </fieldset>
+	  <fieldset>
+       <select cf-questions="{name} please pick a suitable date for your appointment" name="appointmentdate" id="appointmentdate" class="form-control">
+         <option></option>
+         <option>1st April 2020</option>
+         <option>2nd April 2020</option>
+         <option>3rd April 2020</option>
+         <option>4th April 2020</option>
+         <option>5th April 2020</option>
+         <option>6th April 2020</option>
+         <option>7th April 2020</option>
+       </select>
+      </fieldset>
+	  <fieldset>
+       <select cf-questions="Fantastic! By proceeding you will be booked for an appointment at {hospital} for {appointmentdate}. Would you like to proceed?" name="proceed" id="proceed" class="form-control">
+         <option></option>
+         <option>Yes</option>
+         <option>No</option>
+       </select>
+      </fieldset>
+	  <cf-robot-message cf-conditional-proceed="Yes" cf-questions="Thanks {name}, Your appointment has been booked. An SMS and Email has been sent to confirm that your appointment has been booked. Thanks you."></cf-robot-message>
+	  <cf-robot-message cf-conditional-proceed="No" cf-questions="Ok {name}, your appointment has been canceled. Come back soon."></cf-robot-message>
+	  </form>
+		<div>
+	  		<div id="cf-context" class="dark-theme" role="cf-context" cf-context></div>
+	  	</div>
+	  </div>
+	</div>
+  </div>
+	<!--bot-->
+    <div class="hero-section">
+      <div class="home-logo-container w-clearfix"><a href="index.html" aria-current="page" class="brand w-inline-block w--current"><img src="images/logo2.png" alt="" class="image-4"></a><a ms-rewrite="My Account" href="login.html" class="nav-link login-link">LOGIN</a></div>
+      <div class="container hero-container">
+        <div class="hero-row">
+          <div class="hero-content">
+            <h1 class="home-h1">Easy access to world class health care from anywhere<br></h1>
+            <p class="home-text hero-home-text">World class healthcare at your fingertips. Setup takes just a few minutes.</p>
+            <a href="#" onclick="openForm('form-appointment')" class="button w-inline-block" style="border-radius: 20px; color: rgb(60, 60, 134); background-color: white; border: 1px solid rgb(60, 60, 134); display: none;">
+              <div>Book a hospital visit</div>
+            </a><a href="#" class="button-5 w-button" onclick="openForm('form')" style="border-radius: 20px ;"><strong>Run a COVID-19 assessment</strong></a>
+            <a href="http://patient.serenity.health/#/" class="button w-inline-block" style="border-radius: 20px; color: rgb(60, 60, 134); background-color: white; display: none; border: 1px solid rgb(60, 60, 134)"; >
+              <div>Connect with a clinician online</div>
+            </a>
+          </div>
+          <div class="hero-block">
+            <!-- <div class="hero-corner hero-corner-bottom-left">
+              <div class="hero-line-two"></div>
+              <div class="hero-line"></div>
+            </div>
+            <div class="hero-corner hero-corner-bottom-right">
+              <div class="hero-line-two"></div>
+              <div class="hero-line"></div>
+            </div>
+            <div class="hero-corner hero-corner-top-right">
+              <div class="hero-line-two"></div>
+              <div class="hero-line"></div>
+            </div>
+            <div class="hero-corner">
+              <div class="hero-line"></div>
+              <div class="hero-line-two"></div>
+            </div> -->
+            <img src="images/WhatsApp-Image-2020-03-25-at-18.20.45.jpeg" srcset="images/WhatsApp-Image-2020-03-25-at-18.20.45-p-800.jpeg 800w, images/WhatsApp-Image-2020-03-25-at-18.20.45.jpeg 1080w" sizes="(max-width: 479px) 100vw, (max-width: 767px) 67vw, (max-width: 991px) 370px, 56vw" alt="" class="image"></div>
+        </div>
+      </div>
+      <div class="container hero-container">
+        <div class="logo-row"><img src="images/Webflow.svg" alt="" class="customer-logo"><img src="images/tesla.svg" alt="" class="customer-logo"><img src="images/Google_1.svg" alt="" class="customer-logo"><img src="images/instagram.svg" alt="" class="customer-logo"><img src="images/youtube.svg" alt="" class="customer-logo"><img src="images/hubspot.svg" alt="" class="customer-logo"></div>
+      </div>
+      <div class="hero-gradient"></div>
+    </div>
+    <div class="benefits-section">
+      <div class="container">
+        <h2 class="center-h2">COVID-19</h2>
+        <div class="container slim-container">
+          <div class="home-text center-home-text">Serenity Health has created a simple and free Coronavirus Assestment Tool for you and your family to beeter understand your risk on th virus based on the CDC guidelines</div><a href="covid-19.html" class="button-2 w-button"><strong>Check symptoms for COVID-19</strong></a></div>
+        <div class="feature-row">
+          <div class="feature-column">
+            <h3>FOR YOU</h3>
+            <div class="home-text">Serenity, always understands you from her suggestions to your timeout requests based on your current interface, she learns everyday</div>
+          </div>
+          <div class="feature-column"><img src="images/x-ray_kit8-net.png" srcset="images/x-ray_kit8-net-p-500.png 500w, images/x-ray_kit8-net.png 800w" sizes="100vw" alt="" class="feature-svg">
+            <div class="feature-box">
+              <div class="hero-corner hero-corner-bottom-right">
+                <div class="benefit-line-1"></div>
+                <div class="benefit-line-2"></div>
+              </div><img src="images/a5b1b2e7d46a7e8ac79a418dd0e9a7d6.png" srcset="images/a5b1b2e7d46a7e8ac79a418dd0e9a7d6-p-500.png 500w, images/a5b1b2e7d46a7e8ac79a418dd0e9a7d6.png 800w" sizes="100vw" alt=""></div>
+          </div>
+        </div>
+        <div class="feature-row no-reverse-feature-row">
+          <div class="feature-column"><img src="images/Feature2.svg" alt="" class="feature-svg">
+            <div class="feature-box">
+              <div class="hero-corner hero-corner-top-right">
+                <div class="benefit-line-1"></div>
+                <div class="benefit-line-2"></div>
+              </div>
+              <div class="hero-corner hero-corner-bottom-left">
+                <div class="benefit-line-1"></div>
+                <div class="benefit-line-2"></div>
+              </div><img src="images/business.png" srcset="images/business-p-500.png 500w, images/business.png 800w" sizes="100vw" alt=""></div>
+          </div>
+          <div class="feature-column">
+            <h3>FOR BUSINESS</h3>
+            <div class="home-text">Serenity is the new digital platform that connects you anf your family to better healthcare right from your phone</div>
+          </div>
+        </div>
+        <div class="feature-row">
+          <div class="feature-column">
+            <h3>FOR HOSPITALS</h3>
+            <div class="home-text">Serenity, always understands you from her suggestions to your timeout requests based on your current interface, she learns everyday</div>
+          </div>
+          <div class="feature-column"><img src="images/Feature.svg" alt="" class="feature-svg">
+            <div class="feature-box">
+              <div class="hero-corner">
+                <div class="benefit-line-2"></div>
+                <div class="benefit-line-1"></div>
+              </div><img src="images/48579d154db919544844e9388574f1c3.png" srcset="images/48579d154db919544844e9388574f1c3-p-800.png 800w, images/48579d154db919544844e9388574f1c3-p-1080.png 1080w, images/48579d154db919544844e9388574f1c3.png 1600w" sizes="100vw" alt=""></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div data-w-id="51e04b46-eac8-acce-13f0-1ad07a01d16a" class="testimonials-section">
+      <div class="container">
+        <h2 class="center-h2">Testimonials</h2>
+        <div class="testimonial-row">
+          <div data-w-id="8bd614bb-58dd-57f8-63af-9647c29c57e3" class="giant-quotes">,,</div>
+          <div data-w-id="0152e2e8-76de-a7c5-4f95-80ca3bbf074b" class="testimonial-box left-testimonial"><img src="images/42_142.jpg" alt="" class="user-pic">
+            <div class="user-testimonial"><strong>“I got the care I needed when I needed it - it&#x27;s excellent.”</strong></div>
+            <div class="testimonial-name-wrapper">
+              <div class="user-name">James May</div><a href="#" class="link">tnsghana.com</a></div>
+          </div>
+          <div data-w-id="76b4b61a-d0f6-bac0-0d50-c6558935e395" class="testimonial-box"><img src="images/44_144.jpg" alt="" class="user-pic">
+            <div class="user-testimonial"><strong>“Extremely convenient. Got connected to a care professional in less than 2 minutes. She was very thorough and friendly.”</strong></div>
+            <div class="testimonial-name-wrapper">
+              <div class="user-name">Madison Davey</div><a href="#" class="link">mtngh.com</a></div>
+          </div>
+          <div data-w-id="a18e1185-a19a-2e9f-bb29-510134c28c5b" class="testimonial-box right-testimonial"><img src="images/26_126.jpg" alt="" class="user-pic">
+            <div class="user-testimonial"><strong>“My provider was fantastic. He was empathic and addressed the issue with great detail. I am so happy with my visit!”</strong><br></div>
+            <div class="testimonial-name-wrapper">
+              <div class="user-name">Julia Smith</div><a href="#" class="link">heather.com</a></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="Benefits" class="benefits-section">
+      <div class="container">
+        <div class="feature-grid">
+          <div class="feature-square">
+            <div class="feature-icon"><img src="images/customize_icon.png" alt=""></div>
+            <h3>Virtual Care</h3>
+            <div class="home-text">No more waiting for high-quality virtual care</div>
+          </div>
+          <div class="feature-square">
+            <div class="feature-icon"><img src="images/startup_icon.png" alt=""></div>
+            <h3 class="heading">In Person Visit</h3>
+            <div class="home-text">In person visits at your home or office<br></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="Mobile-Care" class="benefits-section">
+      <div class="container">
+        <div class="feature-grid">
+          <div class="feature-square">
+            <div class="feature-icon"><img src="images/HomeVisit_600px.jpg" srcset="images/HomeVisit_600px-p-500.jpeg 500w, images/HomeVisit_600px.jpg 600w" sizes="100vw" alt=""></div>
+            <h3 class="heading-2">Mobile Care</h3>
+            <div class="home-text">No matter where you are, we will come and get you</div>
+          </div>
+          <div class="feature-square">
+            <div class="feature-icon"><img src="images/0_eHFDGeUQxawyeat3.jpg" alt="" class="image-3"></div>
+            <h3 class="heading">Care Chat</h3>
+            <div class="home-text">We will support you even when we cant reach you.<br></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div data-w-id="270e73b5-79b3-13f7-05ef-5275ccf4001e" class="pricing-section">
+      <div class="container slim-container">
+        <h2 class="center-h2">Pricing</h2>
+        <div>
+          <div class="pricing-row">
+            <div class="pricing-column basic-column">
+              <div class="plan-name">Basic</div>
+              <div class="plan-amount-block"><span class="dollar-sign">$</span><span class="plan-price">49</span><span class="plan-duration">/ mo</span></div>
+              <div class="plan-features">
+                <div>24/7 support</div>
+                <div>Personal Insurance Package</div>
+                <div>Health Application</div>
+              </div>
+              <a data-membership-id="5c61ea857579e5001704b4ea" href="signup.html" class="button full-button w-inline-block">
+                <div>Get Started</div>
+              </a>
+              <div class="pricing-accent red-accent"></div>
+            </div>
+            <div class="pricing-column">
+              <div class="plan-name">Premium</div>
+              <div class="plan-amount-block"><span class="dollar-sign">$</span><span class="plan-price">499</span><span class="plan-duration">/ yr</span></div>
+              <div class="plan-features">
+                <div>24/7 support</div>
+                <div>Personal Insurance Package</div>
+                <div>Health Application</div>
+                <div>Virtual care</div>
+                <div>Mobile Care</div>
+              </div>
+              <a data-membership-id="5c61ea9d7579e5001704b4eb" href="signup.html" class="button full-button secondary-button w-inline-block">
+                <div>Get Started</div>
+              </a>
+              <div class="pricing-accent"></div>
+            </div>
+          </div>
+          <div class="pricing-disclaimer">*Price does not include additional taxes, fees, and surcharges. To learn more, please <a href="https://www.uberconference.com/contact" class="link">contact our sales team</a>.<br></div>
+        </div>
+        <div>
+          <h3 class="faq-h2">Frequently Asked Questions</h3>
+          <div class="faq-min-height">
+            <div class="faq-wrap">
+              <div class="faq-question">
+                <div class="faq-q-text">Do you offer any discounts?</div>
+                <div class="faq-plus-wrap">
+                  <div class="faq-plus-l"></div>
+                  <div class="faq-plus"></div>
+                </div>
+              </div>
+              <div class="faq-answer">
+                <p class="faq-answer-text">Our product is priced to be affordable, so we don&#x27;t give any discounts. We already offer our product at a competitive price.<br></p>
+              </div>
+            </div>
+            <div class="faq-wrap">
+              <div class="faq-question">
+                <div class="faq-q-text">Is there a long-term contract?</div>
+                <div class="faq-plus-wrap">
+                  <div class="faq-plus-l"></div>
+                  <div class="faq-plus"></div>
+                </div>
+              </div>
+              <div class="faq-answer">
+                <p class="faq-answer-text">No, we don&#x27;t force you into any long-term contracts. Our best price is available as an annual subscription, but we offer monthly subscriptions as well.</p>
+              </div>
+            </div>
+            <div class="faq-wrap">
+              <div class="faq-question">
+                <div class="faq-q-text">Which payments do you accept?</div>
+                <div class="faq-plus-wrap">
+                  <div class="faq-plus-l"></div>
+                  <div class="faq-plus"></div>
+                </div>
+              </div>
+              <div class="faq-answer">
+                <p class="faq-answer-text">We accept online payments through Visa, MasterCard, and American Express. If you don&#x27;t have a credit card, we accept checks, PayPal (you must have a PayPal account), and wire transfers. To arrange offline payments, or if you have any questions, please <a href="#" class="normal-font">contact our sales team</a>.<br></p>
+              </div>
+            </div>
+            <div class="faq-wrap">
+              <div class="faq-question">
+                <div class="faq-q-text">How do transaction fees work?</div>
+                <div class="faq-plus-wrap">
+                  <div class="faq-plus-l"></div>
+                  <div class="faq-plus"></div>
+                </div>
+              </div>
+              <div class="faq-answer">
+                <p class="faq-answer-text">During this time we found that our smallest customers accounted for a significant amount of our support resources. We have changed our pricing structure so that we can better meet the needs of all our customers.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="container"></div>
+    </div>
+    <div class="text-block" style="text-align: center;">Join over 50,000 people already on Serenity</div>
+    <div class="footer-section">
+      <div data-w-id="dc06095e-712f-20ef-aaa2-14855b29c909" class="container">
+        <div class="footer-row"><img src="images/logo2.png" alt="" class="footer-image">
+          <div>
+            <div class="social-icon"><img src="images/twitter.svg" alt=""></div>
+            <div class="social-icon"><img src="images/facebook.svg" alt=""></div>
+            <div class="social-icon"><img src="images/google.svg" alt=""></div>
+          </div>
+        </div>
+        <div class="footer-row">
+          <div class="footer-copywrite">© Serenity 2019. All rights reserved.<br></div>
+          <div class="footer-link-wrapper"><a href="#" class="footer-link">Home</a><a href="pricing.html" class="footer-link">Patient Portal</a><a href="#" class="footer-link">Coronavirus COVID-19</a><a href="#" class="footer-link">Sign In</a>
+            <div memberstack-template="Light Template" class="template-tag"><a href="http://memberstack.io" target="_blank" class="w-inline-block"></a></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="w-embed w-script">
+      <script samesite="None; Secure" src="https://static.landbot.io/landbot-widget/landbot-widget-1.0.0.js"></script>
+      <script>
+    // var myLandbot = new LandbotLivechat({
+    //   index: 'https://landbot.io/u/H-410180-9H58LDKZ2KT8JIYM/index.html',
+    // });
+  </script>
+      <script>
+    // Show a proactive message on landbot load
+    // myLandbot.on('landbot-load', function() {
+    //   myLandbot.sendProactive({
+    //     "message": "Take a quick coronavirus (COVID-19) assessment",
+    //     "author": "Hello there!",
+    //     "avatar": "https://storage.googleapis.com/media.helloumi.com/brands/helloumi.png",
+    //     "extra": {
+    //       "hide_textbox": true
+    //     }
+    //   });
+    // });
+  </script>
+    </div>
+  </div>
+  <div class="delete-me-welcome">
+    <div class="help-tooltip tour-tooltip">
+      <div class="help-tooltip-content">
+        <div class="help-title inline-block">Setup To-do</div>
+        <div class="relative">1. Publish this site<br>2. Create a MemberStack account<br>3. Test your membership site  🎉🎉🎉<br></div>
+        <div class="tour-dot"></div>
+        <div class="w-embed">
+          <style>
+@keyframes tourDot {
+     0%   {box-shadow: 0 0 0 0px rgba(42, 168, 255, 0.8);}
+     100% {box-shadow: 0 0 0 80px rgba(42, 168, 255, 0);}
+}
+.tour-dot {
+	animation: tourDot 1.5s ease-out infinite;
+  }
+
+</style>
+
+        </div>
+      </div>
+      <div class="tour-bottom-row">
+        <div>You can delete this to-do list anytime.</div>
+      </div>
+      <div class="tour-diamond top-right"></div>
+    </div>
+    <div class="ms-iframe">
+      <div class="ms-iframe-embed w-embed w-iframe"><iframe src="https://memberstack-embeds.webflow.io/branding" sandbox="allow-same-origin allow-scripts allow-forms allow-top-navigation allow-popups"></iframe>
+       
+      
+       <style>
+         /* :root {
+  --anim-easeOutBack: cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  --cf-anim-time: 0.75s;
+  --cf-breakpoint-1: 669px;
+  --cf-color-green: #1ed97b;
+  --cf-font-weight-bold: 900;
+  --cf-color-black: #222222;
+  --cf-color-black-alpha04: rgba(34, 34, 34, 0.4);
+  --cf-color-black-alpha02: rgba(34, 34, 34, 0.2);
+  --cf-color-grey: #ebebeb;
+  --cf-color-white: white;
+}
+
+.dark-theme .conversational-form {
+  font-family: Helvetica Neue, Helvetica;
+  font-style: normal;
+}
+.dark-theme .conversational-form cf-chat scrollable::-webkit-scrollbar {
+  width: 0px;
+}
+.dark-theme .conversational-form cf-chat-response {
+  padding-top: 0px;
+  min-width: 200px;
+}
+@media (min-width: var(--cf-breakpoint-1)) {
+  .dark-theme .conversational-form cf-chat-response {
+    max-width: 83%;
+  }
+}
+.dark-theme .conversational-form cf-chat-response text {
+  font-weight: var(--cf-font-weight-bold);
+  min-height: 22px;
+  font-size: 12px;
+}
+.dark-theme .conversational-form cf-chat-response thumb {
+  height: 22px;
+  width: 22px;
+}
+.dark-theme .conversational-form cf-chat-response thumb > p {
+  background-color: var(--cf-color-grey);
+}
+.dark-theme .conversational-form cf-chat-response:not(:last-of-type) {
+  margin-bottom: 10px;
+}
+.dark-theme .conversational-form cf-chat-response.robot {
+  padding-left: 48px;
+}
+.dark-theme .conversational-form cf-chat-response.robot text {
+  color: var(--cf-color-black);
+}
+.dark-theme .conversational-form cf-chat-response.robot text > p {
+  border-radius: 4px 20px 20px 20px;
+  background: var(--cf-color-grey);
+}
+.dark-theme
+  .conversational-form
+  cf-chat-response.robot
+  text
+  > p:not(:only-child):first-child {
+  border-radius: 20px 20px 20px 4px;
+}
+.dark-theme
+  .conversational-form
+  cf-chat-response.robot
+  text
+  > p:not(:only-child):last-child {
+  border-radius: 4px 20px 20px 20px;
+}
+.dark-theme .conversational-form cf-chat-response.robot thumb {
+  background-color: var(--cf-color-grey);
+  background-size: 18px 18px;
+  background-repeat: no-repeat;
+}
+.dark-theme .conversational-form cf-chat-response.user {
+  padding-right: 48px;
+}
+.dark-theme .conversational-form cf-chat-response.user text {
+  color: var(--cf-color-white);
+}
+.dark-theme .conversational-form cf-chat-response.user text > p {
+  background: var(--cf-color-black);
+  border-radius: 20px 4px 20px 20px;
+}
+.dark-theme .conversational-form cf-chat-response.user thumb {
+  background-color: var(--cf-color-black);
+  background-size: 15px 12px;
+  background-repeat: no-repeat;
+  background-position: 11px 12px;
+}
+.dark-theme .conversational-form cf-input input,
+.dark-theme .conversational-form cf-input textarea {
+  border-radius: 25px;
+  min-height: 27px;
+  font-size: 12px;
+  padding: 15px 15px 15px 15px;
+  height: 26px;
+  color: var(--cf-color-black-alpha04);
+  font-weight: var(--cf-font-weight-bold);
+}
+@media (min-width: var(--cf-breakpoint-1)) {
+  .dark-theme .conversational-form cf-input input,
+  .dark-theme .conversational-form cf-input textarea {
+    font-size: 12px;
+  }
+}
+.dark-theme .conversational-form cf-input input:not(:focus),
+.dark-theme .conversational-form cf-input textarea:not(:focus) {
+  box-shadow: 0 0 1px rgba(58, 58, 58, 0.5);
+}
+.dark-theme .conversational-form cf-input-button {
+  background: var(--cf-color-black);
+  height: 60px;
+  width: 30px;
+  border: none;
+}
+.dark-theme .conversational-form cf-input-button.microphone-interface {
+  background: var(--cf-color-white);
+}
+.dark-theme .conversational-form cf-input-button .cf-icon-progress {
+  background-image: url("data:image/svg+xml;charset=utf-8;base64,PHN2ZyB3aWR0aD0iMThweCIgaGVpZ2h0PSIxOXB4IiB2aWV3Qm94PSIwIDAgMTggMTkiIHZlcnNpb249IjEuMSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiB4bWxuczp4bGluaz0iaHR0cDovL3d3dy53My5vcmcvMTk5OS94bGluayI+CiAgICA8ZyBzdHJva2U9Im5vbmUiIHN0cm9rZS13aWR0aD0iMSIgZmlsbD0ibm9uZSIgZmlsbC1ydWxlPSJldmVub2RkIj4KICAgICAgICA8ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSgtMTM3Mi4wMDAwMDAsIC05NDUuMDAwMDAwKSIgc3Ryb2tlPSIjRkZGRkZGIiBzdHJva2Utd2lkdGg9IjIiPgogICAgICAgICAgICA8ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSg3NTEuMDAwMDAwLCA5MjcuMDAwMDAwKSI+CiAgICAgICAgICAgICAgICA8ZyB0cmFuc2Zvcm09InRyYW5zbGF0ZSg2MjIuMDAwMDAwLCAxOS4wMDAwMDApIj4KICAgICAgICAgICAgICAgICAgICA8cGF0aCBkPSJNOC4xNDAzNTA4OCwyLjEwOTE4MTE0IEw4LjE0MDM1MDg4LDE2LjA4MDkzODUiIGlkPSJMaW5lIiBzdHJva2UtbGluZWNhcD0ic3F1YXJlIj48L3BhdGg+CiAgICAgICAgICAgICAgICAgICAgPHBvbHlsaW5lIGlkPSJSZWN0YW5nbGUiIHRyYW5zZm9ybT0idHJhbnNsYXRlKDcuOTkzODAzLCA4LjA2ODc0NSkgcm90YXRlKC0zMTUuMDAwMDAwKSB0cmFuc2xhdGUoLTcuOTkzODAzLCAtOC4wNjg3NDUpICIgcG9pbnRzPSIyLjYyNTkxMzI4IDEzLjQ4Njk1OCAyLjYyNTkxMzI4IDIuNjUwNTMxMjEgMi42MjU5MTMyOCAyLjY1MDUzMTIxIDEzLjM2MTY5MjEgMi42NTA1MzEyMSI+PC9wb2x5bGluZT4KICAgICAgICAgICAgICAgIDwvZz4KICAgICAgICAgICAgPC9nPgogICAgICAgIDwvZz4KICAgIDwvZz4KPC9zdmc+");
+  background-size: 15px 16px;
+}
+.dark-theme .conversational-form cf-input-button.loading:after {
+  cf-border: x solid var(--cf-color-green);
+}
+.dark-theme .conversational-form cf-input-button .cf-icon-audio {
+  background-image: url("data:image/png;charset=utf-8;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAmCAYAAAGpAGuzAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAtlJREFUeNpiUFJSYgDh////M7AwQMB/ZWVlBiYGJADiqACx/N27dxlByu7AZAACiAFqwCeQATA9vDA9KAb8BzGARv8HcRhBHJBpAAHECDIAZjGMAZJA0Y9u1mcg5kEWhJnLC5UEgf1QehFOOwACCFniKBBPBwouQXb8NiC2AuLFyJaDgCc2V+F0Lk4JkGsuYvMHCBhA6QNAQT8QgwUacCBd94DYAYRhUcKAJMkFFPyObDnM199g9gAEELLPMYIGCpYDTYnC5Y1/WHwUic/fjAwEABMDiYBkDaBg2gXErkCcCQom5BCBJQtYLCCH0h8gZgbiJ0Asi6YBFEvnoWxtFiSbQOA2lmAFgQBg0G7EFg/YFIOTKowNEEDYIi4GiKcB8WUgtgYqxvA0MliGFFFWUBsZ8QVrJLp1wNDZRmo8eJCqgZG+SWMQamBBSg64Ms9FYFzwQIu8L0zYkjIasIQmFxA4hqzBD1rEH0ASk4cWI9Oh/GxQ4tMCMq5CBQyB+AKaDY+BWAaI/wI1s4BsuAYqgqGS56F+2gd13n+oYlASZ0EOpXhQJkEy1RFU1UDZd5DzA3Ly3ggNKU6kfM2Inh+YsJR6yIXAf1jmJzviAAIMWxZFBvxAPAeIQ3DIrwHiFKCzP5JjgSe01iIGeAEt2U6qBa+BWIRIC94ALRAlNTOIkBDUIlTLbTTPzqMW0NWCrySY8xVfEXwLiFWRxDSB+AYQdwJxE5EWdEKrTQ0gdR1J/DbIBzPQFM+F0s1AbAvEH/AYDJKzBWayZjS9MDADlpPXAXEgksRbIDYB4gdIYupArAtlg5oSN6EFM8jlCkDmGSAWRlK/HigXhFxUFANxD5oLfkPbJlOhrSFkAArWbCDOAmJWNLkSoOG92MoiUAHfAcRlZCaaLiCuABr+n5jCjhVaXYYCsTMQs6HJ/wLivUC8GoiXAA39TU59gK/9B+snkV3h/CclbJArVrrmZAB+mc1ty+WBKAAAAABJRU5ErkJggg==");
+  background-size: 11px 16px;
+  mix-blend-mode: difference;
+}
+.dark-theme .conversational-form cf-input-button cf-icon-audio-eq {
+  border-color: var(--cf-color-black);
+}
+.dark-theme .conversational-form .cf-button {
+  color: var(--cf-color-black);
+  border-color: #dddddd;
+  transition: opacity var(--cf-anim-time) var(--anim-easeOut),
+    border-color var(--cf-anim-time) var(--anim-easeOut),
+    color var(--cf-anim-time) var(--anim-easeOut);
+  background: none !important;
+  font-weight: var(--cf-font-weight-bold);
+  line-height: 1.2;
+}
+.dark-theme .conversational-form .cf-button > div {
+  padding: 5px 10px;
+}
+.dark-theme .conversational-form .cf-button cf-radio {
+  background: var(--cf-color-black-alpha02);
+}
+.dark-theme .conversational-form .cf-button.highlight,
+.dark-theme .conversational-form .cf-button:focus,
+.dark-theme .conversational-form .cf-button:hover,
+.dark-theme .conversational-form .cf-button[checked="checked"],
+.dark-theme .conversational-form .cf-button.selected {
+  border-color: #5e5e5e;
+  color: var(--cf-color-black-alpha02);
+}
+.dark-theme .conversational-form .cf-button.highlight cf-radio,
+.dark-theme .conversational-form .cf-button.highlight cf-radio,
+.dark-theme .conversational-form .cf-button.highlight cf-radio,
+.dark-theme .conversational-form .cf-button:focus cf-radio,
+.dark-theme .conversational-form .cf-button:focus cf-radio,
+.dark-theme .conversational-form .cf-button:focus cf-radio,
+.dark-theme .conversational-form .cf-button:hover cf-radio,
+.dark-theme .conversational-form .cf-button:hover cf-radio,
+.dark-theme .conversational-form .cf-button:hover cf-radio,
+.dark-theme .conversational-form .cf-button[checked="checked"] cf-radio,
+.dark-theme .conversational-form .cf-button[checked="checked"] cf-radio,
+.dark-theme .conversational-form .cf-button[checked="checked"] cf-radio,
+.dark-theme .conversational-form .cf-button.selected cf-radio,
+.dark-theme .conversational-form .cf-button.selected cf-radio,
+.dark-theme .conversational-form .cf-button.selected cf-radio {
+  background: var(--cf-color-black);
+}
+.dark-theme .conversational-form cf-list-button:after {
+  background-image: none;
+  background: black;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+} */
+
+#cf-context { 
+  width: 350px; 
+  height: 500px;
+}
+#form {
+  height: 0px;
+  overflow: hidden;
+}
+#form-appointment{
+  height: 0px;
+  overflow: hidden;
+}
+/* The popup chat - hidden by default */
+.chat-popup {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  right: 15px;
+  border: 3px solid #f1f1f1;
+  z-index: 9;
+}
+
+/* Add styles to the form container */
+.form-container {
+  max-width: 300px;
+  padding: 10px;
+  background-color: white;
+}
+
+/* Full-width textarea */
+.form-container textarea {
+  width: 100%;
+  padding: 15px;
+  margin: 5px 0 22px 0;
+  border: none;
+  background: #f1f1f1;
+  resize: none;
+  min-height: 200px;
+}
+
+/* When the textarea gets focus, do something */
+.form-container textarea:focus {
+  background-color: #ddd;
+  outline: none;
+}
+
+/* Set a style for the submit/send button */
+.form-container .btn {
+  background-color: #4CAF50;
+  color: white;
+  padding: 16px 20px;
+  border: none;
+  cursor: pointer;
+  width: 100%;
+  margin-bottom:10px;
+  opacity: 0.8;
+}
+
+/* Add a red background color to the cancel button */
+.form-container .cancel {
+  background-color: red;
+}
+
+/* Add some hover effects to buttons */
+.form-container .btn:hover, .open-button:hover {
+  opacity: 1;
+}
+.myForm{
+  /* Add shadows to create the "card" effect */
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2);
+  transition: 0.3s;
+}
+iframe {
+		height: 100%;
+    width: 100%;
+    border-width: 0px;
+    border-style: inset;
+    border-color: initial;
+    border-image: initial;
+    border: 0;
+    border: none;
+    min-height: 0px;
+    min-width: 0px;
+    background: transparent;
+}
+* {
+    box-sizing: border-box;
+}
+/* width */
+::-webkit-scrollbar {
+    height: 0px;
+    width: 0px;
+    /* background-color:; */
+}
+/* Track */
+::-webkit-scrollbar-track {
+    background: transparent; 
+}
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: transparent; 
+}
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: transparent; 
+}
+
+</style>
+      </div>
+    </div>
+  </div>
+  <script src="https://d3e54v103j8qbb.cloudfront.net/js/jquery-3.4.1.min.220afd743d.js?site=5e3056e4c8d42507e27c654e" type="text/javascript" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+  <script src="js/webflow.js" type="text/javascript"></script>
+  <!-- [if lte IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/placeholders/3.0.2/placeholders.min.js"></script><![endif] -->
+  <script>
+    window.onload = function() {
+	
+};
+  </script>
+</body>
+</html>
